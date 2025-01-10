@@ -1,0 +1,15 @@
+[package]
+name = "pfrs"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+repository = "https://github.com/splurf/pfrs"
+authors = ["Evan Schwartzentruber <evandotschwartzentruber@gmail.com>"]
+description = "Quickly find the an available dynamic port."
+keywords = ["port", "dynamic", "fast", "easy", "lightweight"]
+categories = ["accessibility"]
+exclude = [".github/", ".gitignore", "LICENSE", "README.md"]
+
+[profiles.release]
+lto = true
+codegen-units = 1
