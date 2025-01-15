@@ -1,5 +1,5 @@
 use std::{
-    net::{TcpListener, UdpSocket},
+    net::{IpAddr, TcpListener, UdpSocket},
     ops::RangeInclusive,
 };
 
@@ -14,17 +14,17 @@ pub enum Protocol {
 
 impl Protocol {
     /// Method of binding based on the provided protocol.
-    pub const fn method<'a>(&self) -> impl Fn(&'a str, u16) -> bool {
+    pub const fn method<A: Into<IpAddr>>(&self) -> impl Fn(A, u16) -> bool {
         match self {
-            Self::Tcp => |addr, port| TcpListener::bind((addr, port)).is_ok(),
-            Self::Udp => |addr, port| UdpSocket::bind((addr, port)).is_ok(),
+            Self::Tcp => |addr: A, port| TcpListener::bind((addr.into(), port)).is_ok(),
+            Self::Udp => |addr: A, port| UdpSocket::bind((addr.into(), port)).is_ok(),
         }
     }
 }
 
 /// Find an available dynamic port (49152..=65535).
-pub fn find_open_port<S: AsRef<str>>(addr: S, kind: Protocol) -> Option<u16> {
-    let addr = addr.as_ref();
+pub fn find_open_port<A: Into<IpAddr>>(addr: A, kind: Protocol) -> Option<u16> {
+    let addr = addr.into();
     let method = kind.method();
 
     #[allow(clippy::useless_conversion)]
